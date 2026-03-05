@@ -4,7 +4,7 @@ from pydantic import BaseModel, Field
 import pandas as pd
 import joblib
 import os
-
+from diabetes_risk_model import final_predict
 # --------------------------------------------------
 # App Configuration
 # --------------------------------------------------
@@ -131,4 +131,5 @@ def predict(patient: PatientData):
         }
 
     except Exception as e:
+
         raise HTTPException(status_code=500, detail=str(e))
