@@ -351,7 +351,7 @@ oninput="cholVal.innerText=this.value==1?'YES':'NO'">
 
 <label>BMI Category (1-5)</label>
 
-<input type="range" min="1" max="5" step="1" value="3" id="GenHlth"
+<input type="range" min="1" max="5" step="1" value="3" id="BMI_Category"
 oninput="genValue.innerText=this.value">
 
 <div class="slider-value" id="genValue">3</div>
@@ -361,7 +361,7 @@ oninput="genValue.innerText=this.value">
 
 <label>Age Group (1-5)</label>
 
-<input type="range" min="1" max="5" step="1" value="3" id="GenHlth"
+<input type="range" min="1" max="5" step="1" value="3" id="Age_Group"
 oninput="genValue.innerText=this.value">
 
 <div class="slider-value" id="genValue">3</div>
@@ -455,21 +455,21 @@ oninput="vegVal.innerText=this.value==1?'YES':'NO'">
 </div>
        <div>
 <label>Healthcare Access</label>
-<input type="range" min="0" max="1" step="1" value="1" id="Veggies"
+<input type="range" min="0" max="1" step="1" value="1" id="AnyHealthcare">
 oninput="vegVal.innerText=this.value==1?'YES':'NO'">
 <div class="slider-value" id="vegVal">YES</div>
 </div>     
            
           <div>
 <label>No Doc</label>
-<input type="range" min="0" max="1" step="1" value="1" id="Veggies"
+<input type="range" min="0" max="1" step="1" value="1" id="NoDocbcCost">
 oninput="vegVal.innerText=this.value==1?'YES':'NO'">
 <div class="slider-value" id="vegVal">YES</div>
 </div>    
 
             <div class="slider-field">
 <label>Biological Sex</label>
-<input type="range" min="0" max="1" step="1" value="0" id="sex">
+<input type="range" min="0" max="1" step="1" value="0" id="Sex">
 <div class="slider-values">
 <span>0 = Female</span>
 <span>1 = Male</span>
@@ -477,7 +477,7 @@ oninput="vegVal.innerText=this.value==1?'YES':'NO'">
 </div>
             <div class="slider-field">
 <label>Education Level</label>
-<input type="range" min="0" max="5" step="1" value="0" id="education">
+<input type="range" min="0" max="5" step="1" value="0" id="Education">
 <div class="slider-values">
 <span>0 = No School</span>
 <span>5 = College Grad</span>
@@ -485,7 +485,7 @@ oninput="vegVal.innerText=this.value==1?'YES':'NO'">
 </div>
       <div class="slider-field">
 <label>Income Tier</label>
-<input type="range" min="0" max="2" step="1" value="1" id="income">
+<input type="range" min="0" max="2" step="1" value="1" id="Income">
 <div class="slider-values">
 <span>0 = Low</span>
 <span>2 = High</span>
