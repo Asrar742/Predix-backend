@@ -586,7 +586,13 @@ oninput="vegVal.innerText=this.value==1?'YES':'NO'">
         btn.innerText = "Processing Data...";
         
         const data = {};
-        document.querySelectorAll("input").forEach(i => data[i.id] = Number(i.value) || 0);
+document.querySelectorAll("input").forEach(i => data[i.id] = Number(i.value) || 0);
+
+// add backend-required derived fields
+data.Chol_Check_Interaction = data.HighChol * data.CholCheck;
+data.HealthBurden = data.MentHlth + data.PhysHlth;
+data.LifestyleRisk = data.Smoker + data.HvyAlcoholConsump;
+data.Alcohol = data.HvyAlcoholConsump;
         
         try {
             const response = await fetch("https://predix-backend-l3dq.onrender.com/api/v1/predict", {
