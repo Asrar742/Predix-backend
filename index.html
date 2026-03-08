@@ -12,7 +12,7 @@
             --glass: rgba(18, 18, 18, 0.7);
             --border: rgba(255, 255, 255, 0.08);
             --accent: #ff3c3c;
-            --text-main: #ffffff;
+            --text-main:#94a3b8 ;
             --text-dim: #94a3b8;
             --radius: 20px;
         }
@@ -198,6 +198,71 @@
             .review-section { grid-template-columns: 1fr; }
             .footer-grid { grid-template-columns: 1fr; gap: 40px; }
         }
+      /* ---------- SLIDERS ---------- */
+
+.slider-field{
+display:flex;
+flex-direction:column;
+gap:8px;
+}
+label{
+    font-size:10px;
+    font-weight:700;
+    text-transform:uppercase;
+    color:var(--text-dim);
+}
+
+.slider-value{
+font-size:12px;
+color:var(--accent);
+font-weight:700;
+}
+
+input[type=range]{
+-webkit-appearance:none;
+width:100%;
+height:6px;
+background:#222;
+border-radius:10px;
+outline:none;
+}
+
+input[type=range]::-webkit-slider-thumb{
+-webkit-appearance:none;
+appearance:none;
+width:18px;
+height:18px;
+border-radius:50%;
+background:var(--accent);
+cursor:pointer;
+box-shadow:0 0 8px rgba(255,60,60,0.8);
+}
+
+/* ---------- CHART AREA ---------- */
+
+.chart-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:40px;
+margin-top:40px;
+}
+
+.chart-box{
+background:rgba(255,255,255,0.03);
+padding:20px;
+border-radius:14px;
+border:1px solid var(--border);
+}
+
+.insights{
+margin-top:30px;
+background:rgba(255,60,60,0.05);
+padding:20px;
+border-radius:10px;
+border-left:3px solid var(--accent);
+font-size:14px;
+color:var(--text-dim);
+}  
     </style>
 </head>
 <body>
@@ -242,48 +307,190 @@
         <div class="panel">
             <h3>Biometric Biomarkers</h3>
             <div class="field-grid">
-                <div class="field"><label>BMI</label><input id="BMI" type="number" step="0.1"></div>
-                <div class="field"><label>Age</label><input id="Age" type="number"></div>
-                <div class="field"><label>Gen. Health (1-5)</label><input id="GenHlth" type="number"></div>
+                <div class="slider-field">
+
+<label>BMI</label>
+
+<input type="range" id="BMI" min="10" max="50" step="0.1" value="22"
+oninput="bmiValue.innerText=this.value">
+
+<div class="slider-value" id="bmiValue">22</div>
+
+</div>
+
+
+<div class="slider-field">
+
+<label>Age</label>
+
+<input type="range" id="Age" min="1" max="100" value="30"
+oninput="ageValue.innerText=this.value">
+
+<div class="slider-value" id="ageValue">30</div>
+
+</div>
+
+               <div class="slider-field">
+
+<label>Gen. Health (1-5)</label>
+
+<input type="range" min="1" max="5" step="1" value="3" id="GenHlth"
+oninput="genValue.innerText=this.value">
+
+<div class="slider-value" id="genValue">3</div>
+
+</div>
                 <div class="field"><label>Mental Health Days</label><input id="MentHlth" type="number"></div>
                 <div class="field"><label>Phys. Health Days</label><input id="PhysHlth" type="number"></div>
-                <div class="field"><label>Difficulty Walking</label><input id="DiffWalk" type="number"></div>
-                <div class="field"><label>BMI Category</label><input id="BMI_Category" type="number"></div>
-                <div class="field"><label>Age Group</label><input id="Age_Group" type="number"></div>
+                <div>
+<label>Difficulty Walking</label>
+<input type="range" min="0" max="1" step="1" value="0" id="HighChol"
+oninput="cholVal.innerText=this.value==1?'YES':'NO'">
+<div class="slider-value" id="cholVal">NO</div>
+</div>
+
+<label>BMI Category (1-5)</label>
+
+<input type="range" min="1" max="5" step="1" value="3" id="GenHlth"
+oninput="genValue.innerText=this.value">
+
+<div class="slider-value" id="genValue">3</div>
+
+</div>
+                <div class="slider-field">
+
+<label>Age Group (1-5)</label>
+
+<input type="range" min="1" max="5" step="1" value="3" id="GenHlth"
+oninput="genValue.innerText=this.value">
+
+<div class="slider-value" id="genValue">3</div>
+
+</div>
+                
                 <div class="field"><label>Healthy Diet Score</label><input id="Healthy_Diet" type="number"></div>
             </div>
         </div>
 
-        <div class="panel">
-            <h3>Cardiovascular Profile</h3>
-            <div class="field-grid">
-                <div class="field"><label>High BP</label><input id="HighBP" type="number"></div>
-                <div class="field"><label>High Cholesterol</label><input id="HighChol" type="number"></div>
-                <div class="field"><label>Cholesterol Check</label><input id="CholCheck" type="number"></div>
-                <div class="field"><label>Stroke History</label><input id="Stroke" type="number"></div>
-                <div class="field"><label>Heart Disease</label><input id="HeartDiseaseorAttack" type="number"></div>
-                <div class="field"><label>Chol Interaction</label><input id="Chol_Check_Interaction" type="number"></div>
-                <div class="field"><label>Health Burden</label><input id="HealthBurden" type="number"></div>
-                <div class="field"><label>Lifestyle Risk</label><input id="LifestyleRisk" type="number"></div>
-                <div class="field"><label>Alcohol Consumption</label><input id="Alcohol" type="number"></div>
-            </div>
-        </div>
+     <div class="panel">
 
-    </div>
+<h3>Cardiovascular Indicators</h3>
+
+<div class="field-grid">
+
+<div>
+<label>High Blood Pressure</label>
+<input type="range" min="0" max="1" step="1" value="0" id="HighBP"
+oninput="bpVal.innerText=this.value==1?'YES':'NO'">
+<div class="slider-value" id="bpVal">NO</div>
+</div>
+
+<div>
+<label>High Cholesterol</label>
+<input type="range" min="0" max="1" step="1" value="0" id="HighChol"
+oninput="cholVal.innerText=this.value==1?'YES':'NO'">
+<div class="slider-value" id="cholVal">NO</div>
+</div>
+
+<div>
+<label>Cholesterol Check</label>
+<input type="range" min="0" max="1" step="1" value="0" id="CholCheck"
+oninput="cholcheckVal.innerText=this.value==1?'YES':'NO'">
+<div class="slider-value" id="cholcheckVal">NO</div>
+</div>
+
+<div>
+<label>Stroke History</label>
+<input type="range" min="0" max="1" step="1" value="0" id="Stroke"
+oninput="strokeVal.innerText=this.value==1?'YES':'NO'">
+<div class="slider-value" id="strokeVal">NO</div>
+</div>
+
+<div>
+<label>Heart Disease</label>
+<input type="range" min="0" max="1" step="1" value="0" id="HeartDiseaseorAttack"
+oninput="heartVal.innerText=this.value==1?'YES':'NO'">
+<div class="slider-value" id="heartVal">NO</div>
+</div>
+
+
+
+</div>
+
+</div>
 
     <div class="panel full-width" style="margin-bottom: 60px;">
         <h3>Social & Behavioral Determinants</h3>
         <div class="field-grid">
-            <div class="field"><label>Physical Activity</label><input id="PhysActivity" type="number"></div>
-            <div class="field"><label>Smoker Status</label><input id="Smoker" type="number"></div>
-            <div class="field"><label>Heavy Alcohol</label><input id="HvyAlcoholConsump" type="number"></div>
-            <div class="field"><label>Fruits Intake</label><input id="Fruits" type="number"></div>
-            <div class="field"><label>Veggies Intake</label><input id="Veggies" type="number"></div>
-            <div class="field"><label>Healthcare Access</label><input id="AnyHealthcare" type="number"></div>
-            <div class="field"><label>No Doc (Cost)</label><input id="NoDocbcCost" type="number"></div>
-            <div class="field"><label>Biological Sex</label><input id="Sex" type="number"></div>
-            <div class="field"><label>Education</label><input id="Education" type="number"></div>
-            <div class="field"><label>Income Tier</label><input id="Income" type="number"></div>
+            
+<div>
+<label>Physical Activity</label>
+<input type="range" min="0" max="1" step="1" value="0" id="PhysActivity"
+oninput="actVal.innerText=this.value==1?'ACTIVE':'LOW'">
+<div class="slider-value" id="actVal">LOW</div>
+</div>
+            <div>
+<label>Smoking Status</label>
+<input type="range" min="0" max="1" step="1" value="0" id="Smoker"
+oninput="smokeVal.innerText=this.value==1?'YES':'NO'">
+<div class="slider-value" id="smokeVal">NO</div>
+</div>
+            <div>
+<label>Heavy Alcohol Consumption</label>
+<input type="range" min="0" max="1" step="1" value="0" id="HvyAlcoholConsump"
+oninput="alcVal.innerText=this.value==1?'YES':'NO'">
+<div class="slider-value" id="alcVal">NO</div>
+</div>
+<div>
+<label>Fruit Intake</label>
+<input type="range" min="0" max="1" step="1" value="1" id="Fruits"
+oninput="fruitVal.innerText=this.value==1?'YES':'NO'">
+<div class="slider-value" id="fruitVal">YES</div>
+</div>
+<div>
+<label>Vegetable Intake</label>
+<input type="range" min="0" max="1" step="1" value="1" id="Veggies"
+oninput="vegVal.innerText=this.value==1?'YES':'NO'">
+<div class="slider-value" id="vegVal">YES</div>
+</div>
+       <div>
+<label>Healthcare Access</label>
+<input type="range" min="0" max="1" step="1" value="1" id="Veggies"
+oninput="vegVal.innerText=this.value==1?'YES':'NO'">
+<div class="slider-value" id="vegVal">YES</div>
+</div>     
+           
+          <div>
+<label>No Doc</label>
+<input type="range" min="0" max="1" step="1" value="1" id="Veggies"
+oninput="vegVal.innerText=this.value==1?'YES':'NO'">
+<div class="slider-value" id="vegVal">YES</div>
+</div>    
+
+            <div class="slider-field">
+<label>Biological Sex</label>
+<input type="range" min="0" max="1" step="1" value="0" id="sex">
+<div class="slider-values">
+<span>0 = Female</span>
+<span>1 = Male</span>
+</div>
+</div>
+            <div class="slider-field">
+<label>Education Level</label>
+<input type="range" min="0" max="5" step="1" value="0" id="education">
+<div class="slider-values">
+<span>0 = No School</span>
+<span>5 = College Grad</span>
+</div>
+</div>
+      <div class="slider-field">
+<label>Income Tier</label>
+<input type="range" min="0" max="2" step="1" value="1" id="income">
+<div class="slider-values">
+<span>0 = Low</span>
+<span>2 = High</span>
+</div>
+</div>     
         </div>
     </div>
 
@@ -295,6 +502,29 @@
         <div id="riskLabel" style="text-align: center; font-weight: 700; font-size: 20px;"></div>
         <div id="aiExplanation" style="background: rgba(255,60,60,0.05); padding: 25px; border-radius: 12px; margin-top: 30px; border-left: 3px solid var(--accent); font-size: 14px; color: var(--text-dim); line-height: 1.6;"></div>
     </div>
+    <div id="chartsArea" class="panel full-width" style="display:none">
+
+<h3>Clinical Visualization</h3>
+
+<div class="chart-grid">
+
+<div class="chart-box">
+<canvas id="riskChart"></canvas>
+</div>
+
+<div class="chart-box">
+<canvas id="radarChart"></canvas>
+</div>
+
+<div class="chart-box" style="grid-column:span 2">
+<canvas id="lifestyleChart"></canvas>
+</div>
+
+</div>
+
+<div id="insightText" class="insights"></div>
+
+</div>
 
     <div class="review-section">
         <div class="review-card">
@@ -350,6 +580,7 @@
 
 <script>
     async function runInference() {
+
         const btn = document.getElementById("analyzeBtn");
         const originalText = btn.innerText;
         btn.innerText = "Processing Data...";
@@ -367,10 +598,12 @@
             
             document.getElementById("resultCard").style.display = "block";
             const risk = result.risk_score;
+            generateCharts(data,risk)
             document.getElementById("riskValue").innerText = risk + "%";
             document.getElementById("riskValue").style.color = risk > 70 ? "#ff3c3c" : (risk > 40 ? "#f59e0b" : "#22c55e");
             document.getElementById("riskLabel").innerText = risk > 70 ? "CRITICAL RISK PROFILE" : (risk > 40 ? "MODERATE CONCERN" : "STABLE STATUS");
-            document.getElementById("aiExplanation").innerText = AI Summary: Based on 28 aggregated clinical indicators, the neural network identifies a ${risk}% risk probability. High priority markers evaluated across Biometric, Cardiovascular, and Behavioral data points.;
+           document.getElementById("aiExplanation").innerText =
+`AI Summary: Based on 28 aggregated clinical indicators, the neural network identifies a ${risk}% risk probability. High priority markers evaluated across Biometric, Cardiovascular, and Behavioral data points.`;
             
             // Scroll to results
             document.getElementById("resultCard").scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -382,6 +615,104 @@
             btn.innerText = originalText;
         }
     }
+    function generateCharts(data,risk){
+
+document.getElementById("chartsArea").style.display="block"
+
+new Chart(document.getElementById("riskChart"),{
+
+type:"doughnut",
+
+data:{
+labels:["Safe","Risk"],
+datasets:[{
+data:[100-risk,risk]
+}]
+}
+
+})
+
+
+new Chart(document.getElementById("radarChart"),{
+
+type:"radar",
+
+data:{
+labels:["BMI","Blood Pressure","Cholesterol","Activity","Diet","Smoking"],
+
+datasets:[{
+label:"Health Indicators",
+
+data:[
+data.BMI,
+data.HighBP,
+data.HighChol,
+data.PhysActivity,
+data.Healthy_Diet,
+data.Smoker
+]
+
+}]
+}
+
+})
+
+
+new Chart(document.getElementById("lifestyleChart"),{
+
+type:"bar",
+
+data:{
+labels:["Exercise","Diet","Smoking","Alcohol","Healthcare"],
+
+datasets:[{
+label:"Lifestyle Risk",
+
+data:[
+data.PhysActivity,
+data.Healthy_Diet,
+data.Smoker,
+data.HvyAlcoholConsump,
+data.AnyHealthcare
+]
+
+}]
+}
+
+})
+
+generateInsights(data,risk)
+
+}
+
+
+function generateInsights(data,risk){
+
+let tips=[]
+
+if(data.BMI>30)
+tips.push("High BMI detected. Weight reduction recommended.")
+
+if(data.HighBP==1)
+tips.push("Blood pressure risk marker present.")
+
+if(data.HighChol==1)
+tips.push("Cholesterol levels likely elevated.")
+
+if(data.Smoker==1)
+tips.push("Smoking significantly increases cardiovascular risk.")
+
+if(data.PhysActivity==0)
+tips.push("Low physical activity detected.")
+
+if(risk>70)
+tips.push("High diabetes risk. Clinical screening advised.")
+
+document.getElementById("insightText").innerHTML=
+"<b>AI Health Insights</b><br><br>"+tips.join("<br>")
+
+}
+    
 </script>
 
 </body>
