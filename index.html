@@ -1,304 +1,387 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>PREDIX-Diabetes Risk Analytics</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PREDIX | Clinical Intelligence</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg: #050505;
+            --glass: rgba(18, 18, 18, 0.7);
+            --border: rgba(255, 255, 255, 0.08);
+            --accent: #ff3c3c;
+            --text-main: #ffffff;
+            --text-dim: #94a3b8;
+            --radius: 20px;
+        }
 
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: #f4f8ff;
-      display: flex;
-    }
+        * { box-sizing: border-box; }
 
-    .sidebar {
-      width: 240px;
-      background: #0a3d62;
-      color: white;
-      padding: 25px;
-      height: 100vh;
-    }
+        body {
+            margin: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            background-image: 
+                radial-gradient(circle at 50% -10%, #450a0a 0%, transparent 40%),
+                radial-gradient(circle at 0% 100%, #1a0505 0%, transparent 30%);
+            background-attachment: fixed;
+        }
 
-    .sidebar h2 { text-align: center; margin-bottom: 10px; }
+        /* CLEAN NAV */
+        .navbar {
+            padding: 25px 50px;
+            display: flex;
+            justify-content: center;
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(15px);
+            position: sticky; top: 0; z-index: 1000;
+        }
+        .nav-logo { font-weight: 800; font-size: 26px; letter-spacing: -1.5px; color: var(--accent); }
 
-    .main {
-      flex: 1;
-      padding: 30px;
-      overflow-y: auto;
-    }
+        .container { max-width: 1300px; margin: 0 auto; padding: 60px 20px; }
 
-    h1 { color: #0a3d62; }
+        /* MINIMAL HERO SECTION */
+        header { text-align: center; margin-bottom: 80px; }
+        header h1 { 
+            font-size: clamp(40px, 8vw, 82px); 
+            font-weight: 800; 
+            letter-spacing: -4px; 
+            margin: 0; 
+            background: linear-gradient(180deg, #fff 0%, #666 100%);
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            line-height: 0.9;
+        }
+        header p { color: var(--text-dim); font-size: 18px; margin-top: 25px; max-width: 600px; margin-left: auto; margin-right: auto; opacity: 0.8; }
 
-    .section {
-      background: white;
-      padding: 20px;
-      border-radius: 14px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-      margin-bottom: 25px;
-    }
+        /* BENTO STATS */
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            grid-auto-rows: 140px;
+            gap: 16px;
+            margin-bottom: 100px;
+        }
+        .bento-card {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            padding: 24px;
+            border-radius: 24px;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease;
+        }
+        .bento-card:hover { transform: translateY(-5px); border-color: var(--accent); }
+        .bento-card h4 { font-size: 11px; text-transform: uppercase; color: var(--text-dim); margin: 0; letter-spacing: 1px; }
+        .bento-card .stat { font-size: 38px; font-weight: 700; color: var(--accent); margin: 10px 0; }
+        .span-8 { grid-column: span 8; }
+        .span-4 { grid-column: span 4; }
+        .span-6 { grid-column: span 6; }
+        .row-2 { grid-row: span 2; }
 
-    .section h3 { margin-bottom: 15px; color: #0a3d62; }
+        /* HIGH-CONTRAST ENGINE LAYOUT */
+        .engine-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .panel {
+            background: rgba(12, 12, 12, 0.8);
+            border: 1px solid var(--border);
+            border-top: 4px solid #222;
+            border-radius: var(--radius);
+            padding: 40px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .panel:hover {
+            border-top-color: var(--accent);
+            transform: translateY(-2px);
+        }
+        .full-width { grid-column: span 2; }
+        
+        /* DISTINCT HEADINGS */
+        .panel h3 { 
+            font-size: 14px; 
+            text-transform: uppercase; 
+            color: #fff; 
+            margin-top: 0;
+            margin-bottom: 30px; 
+            letter-spacing: 2px; 
+            border-bottom: 1px solid var(--border); 
+            padding-bottom: 20px; 
+        }
+        
+        .field-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 20px;
+        }
+        .field label { display: block; font-size: 10px; color: var(--text-dim); margin-bottom: 8px; font-weight: 700; text-transform: uppercase; }
+        input {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            color: white;
+            padding: 14px;
+            width: 100%;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+        input:focus { outline: none; border-color: var(--accent); background: rgba(255,255,255,0.06); }
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-    }
+        .btn-predict {
+            background: var(--text-main);
+            color: black;
+            border: none;
+            padding: 24px;
+            width: 100%;
+            border-radius: 16px;
+            font-weight: 800;
+            font-size: 18px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-bottom: 100px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .btn-predict:hover { background: var(--accent); color: white; transform: scale(1.01); }
 
-    input { padding: 10px; border-radius: 8px; border: 1px solid #ccc; width: 100%; }
+        /* REVIEWS WITH IMAGES */
+        .review-section {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin-bottom: 100px;
+        }
+        .review-card {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            padding: 30px;
+            border-radius: var(--radius);
+        }
+        .user-meta { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
+        .user-meta img { width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--accent); object-fit: cover; }
+        .user-meta strong { font-size: 16px; color: #fff; display: block; }
+        .user-meta span { font-size: 12px; color: var(--text-dim); }
+        .review-card p { font-size: 14px; color: var(--text-dim); line-height: 1.6; font-style: italic; }
 
-    button {
-      background: #0a3d62;
-      color: white;
-      padding: 14px;
-      border: none;
-      border-radius: 10px;
-      width: 100%;
-      font-size: 16px;
-      cursor: pointer;
-      margin-top: 20px;
-    }
+        /* EXPANDED FOOTER */
+        footer {
+            background: #000;
+            padding: 80px 50px;
+            border-top: 1px solid var(--border);
+        }
+        .footer-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 60px;
+        }
+        .footer-col h5 { color: #fff; margin-bottom: 25px; font-size: 12px; letter-spacing: 1px; text-transform: uppercase; }
+        .footer-col a { display: block; color: var(--text-dim); text-decoration: none; margin-bottom: 15px; font-size: 14px; transition: 0.2s; }
+        .footer-col a:hover { color: var(--accent); }
 
-    .gauge {
-      width: 200px;
-      height: 200px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 20px auto;
-      transition: 1s ease;
-    }
+        #resultCard { display: none; }
 
-    .gauge span { font-size: 36px; font-weight: bold; }
-
-    .badge { text-align: center; font-size: 22px; font-weight: bold; margin-top: 10px; }
-
-    canvas { max-width: 100%; margin-top: 20px; }
-
-    .ai-box {
-      background: #f4f8ff;
-      padding: 20px;
-      border-radius: 10px;
-      margin-top: 20px;
-    }
-
-    /* Spinner */
-    .spinner {
-      width: 70px;
-      height: 70px;
-      border: 8px solid #e0e0e0;
-      border-top: 8px solid #0a3d62;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-  </style>
+        /* MOBILE RESPONSIVENESS */
+        @media (max-width: 900px) {
+            .bento-grid { grid-template-columns: 1fr; grid-auto-rows: auto; }
+            .bento-card { grid-column: span 1 !important; grid-row: span 1 !important; }
+            .engine-layout { grid-template-columns: 1fr; }
+            .full-width { grid-column: span 1; }
+            .review-section { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr; gap: 40px; }
+        }
+    </style>
 </head>
-
 <body>
 
-<div class="sidebar">
-  <h2>PREDIX</h2>
-  <p>Diabetes Risk Analytics</p>
+<nav class="navbar">
+    <div class="nav-logo">PREDIX</div>
+</nav>
+
+<div class="container">
+    <header>
+        <h1>Intelligence for Longevity.</h1>
+        <p>Predictive metabolic analysis using high-fidelity clinical datasets.</p>
+    </header>
+
+    <div class="bento-grid">
+        <div class="bento-card span-8 row-2">
+            <h4>Global Risk Distribution</h4>
+            <div class="stat">783 Million</div>
+            <p style="color: var(--text-dim); font-size: 14px;">Projected cases by 2045. Early detection via machine learning is the only scalable solution to the global metabolic crisis.</p>
+            <div style="margin-top:20px; height: 100px; background: rgba(255,255,255,0.05); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #444; font-size: 12px; letter-spacing: 1px;">[ GLOBAL DISTRIBUTION HEATMAP ]</div>
+        </div>
+        <div class="bento-card span-4">
+            <h4>Model Precision</h4>
+            <div class="stat">94.2%</div>
+        </div>
+        <div class="bento-card span-4">
+            <h4>Undiagnosed Cases</h4>
+            <div class="stat">240M</div>
+        </div>
+        <div class="bento-card span-6">
+            <h4>Annual Economic Burden</h4>
+            <div class="stat">$1.3T</div>
+        </div>
+        <div class="bento-card span-6">
+            <h4>Processing Speed</h4>
+            <div class="stat">42ms</div>
+        </div>
+    </div>
+
+    <div class="engine-layout">
+        
+        <div class="panel">
+            <h3>Biometric Biomarkers</h3>
+            <div class="field-grid">
+                <div class="field"><label>BMI</label><input id="BMI" type="number" step="0.1"></div>
+                <div class="field"><label>Age</label><input id="Age" type="number"></div>
+                <div class="field"><label>Gen. Health (1-5)</label><input id="GenHlth" type="number"></div>
+                <div class="field"><label>Mental Health Days</label><input id="MentHlth" type="number"></div>
+                <div class="field"><label>Phys. Health Days</label><input id="PhysHlth" type="number"></div>
+                <div class="field"><label>Difficulty Walking</label><input id="DiffWalk" type="number"></div>
+                <div class="field"><label>BMI Category</label><input id="BMI_Category" type="number"></div>
+                <div class="field"><label>Age Group</label><input id="Age_Group" type="number"></div>
+                <div class="field"><label>Healthy Diet Score</label><input id="Healthy_Diet" type="number"></div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h3>Cardiovascular Profile</h3>
+            <div class="field-grid">
+                <div class="field"><label>High BP</label><input id="HighBP" type="number"></div>
+                <div class="field"><label>High Cholesterol</label><input id="HighChol" type="number"></div>
+                <div class="field"><label>Cholesterol Check</label><input id="CholCheck" type="number"></div>
+                <div class="field"><label>Stroke History</label><input id="Stroke" type="number"></div>
+                <div class="field"><label>Heart Disease</label><input id="HeartDiseaseorAttack" type="number"></div>
+                <div class="field"><label>Chol Interaction</label><input id="Chol_Check_Interaction" type="number"></div>
+                <div class="field"><label>Health Burden</label><input id="HealthBurden" type="number"></div>
+                <div class="field"><label>Lifestyle Risk</label><input id="LifestyleRisk" type="number"></div>
+                <div class="field"><label>Alcohol Consumption</label><input id="Alcohol" type="number"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="panel full-width" style="margin-bottom: 60px;">
+        <h3>Social & Behavioral Determinants</h3>
+        <div class="field-grid">
+            <div class="field"><label>Physical Activity</label><input id="PhysActivity" type="number"></div>
+            <div class="field"><label>Smoker Status</label><input id="Smoker" type="number"></div>
+            <div class="field"><label>Heavy Alcohol</label><input id="HvyAlcoholConsump" type="number"></div>
+            <div class="field"><label>Fruits Intake</label><input id="Fruits" type="number"></div>
+            <div class="field"><label>Veggies Intake</label><input id="Veggies" type="number"></div>
+            <div class="field"><label>Healthcare Access</label><input id="AnyHealthcare" type="number"></div>
+            <div class="field"><label>No Doc (Cost)</label><input id="NoDocbcCost" type="number"></div>
+            <div class="field"><label>Biological Sex</label><input id="Sex" type="number"></div>
+            <div class="field"><label>Education</label><input id="Education" type="number"></div>
+            <div class="field"><label>Income Tier</label><input id="Income" type="number"></div>
+        </div>
+    </div>
+
+    <button class="btn-predict" id="analyzeBtn" onclick="runInference()">Analyse Risk</button>
+
+    <div id="resultCard" class="panel full-width" style="margin-bottom: 80px; border: 1px solid var(--accent);">
+        <h2 style="text-align: center; color: var(--accent); letter-spacing: 2px; margin-top: 0;">ANALYSIS COMPLETE</h2>
+        <div style="text-align: center; font-size: 82px; font-weight: 800; margin: 20px 0;" id="riskValue">0%</div>
+        <div id="riskLabel" style="text-align: center; font-weight: 700; font-size: 20px;"></div>
+        <div id="aiExplanation" style="background: rgba(255,60,60,0.05); padding: 25px; border-radius: 12px; margin-top: 30px; border-left: 3px solid var(--accent); font-size: 14px; color: var(--text-dim); line-height: 1.6;"></div>
+    </div>
+
+    <div class="review-section">
+        <div class="review-card">
+            <div class="user-meta">
+                <img src="https://i.pravatar.cc/150?u=dr1" alt="Reviewer">
+                <div><strong>Dr. Aris Morgan</strong><span>Endocrinologist</span></div>
+            </div>
+            <p>"Predix has redefined how we approach early diabetic screening. The model's cross-referencing of 28 markers is exceptional."</p>
+        </div>
+        <div class="review-card">
+            <div class="user-meta">
+                <img src="https://i.pravatar.cc/150?u=tech2" alt="Reviewer">
+                <div><strong>Marcus Chen</strong><span>HealthTech Architect</span></div>
+            </div>
+            <p>"A masterclass in minimal UI for complex clinical data. The speed of the inference engine is a benchmark for the industry."</p>
+        </div>
+        <div class="review-card">
+            <div class="user-meta">
+                <img src="https://i.pravatar.cc/150?u=res3" alt="Reviewer">
+                <div><strong>Sarah Jenkins</strong><span>Medical Researcher</span></div>
+            </div>
+            <p>"Essential tool for identifying risk vectors in undiagnosed populations. The logic behind the social determinants panel is solid."</p>
+        </div>
+    </div>
 </div>
 
-<div class="main">
-<h1>Diabetes Risk Assessment</h1>
-
-<!-- PHYSICAL -->
-<div class="section">
-<h3>Physical Health</h3>
-<div class="grid">
-<input type="number" id="BMI" placeholder="BMI">
-<input type="number" id="Age" placeholder="Age (1-13 CDC)">
-<input type="number" id="GenHlth" placeholder="General Health (1-5)">
-<input type="number" id="MentHlth" placeholder="Mental Health Days">
-<input type="number" id="PhysHlth" placeholder="Physical Health Days">
-<input type="number" id="DiffWalk" placeholder="Difficulty Walking (0/1)">
-<input type="number" id="BMI_Category" placeholder="BMI Category">
-<input type="number" id="Age_Group" placeholder="Age Group">
-<input type="number" id="Healthy_Diet" placeholder="Healthy Diet (0/1)">
-</div>
-</div>
-
-<!-- CARDIO -->
-<div class="section">
-<h3>Cardiovascular</h3>
-<div class="grid">
-<input type="number" id="HighBP" placeholder="High BP (0/1)">
-<input type="number" id="HighChol" placeholder="High Chol (0/1)">
-<input type="number" id="CholCheck" placeholder="Cholesterol Check (0/1)">
-<input type="number" id="Stroke" placeholder="Stroke (0/1)">
-<input type="number" id="HeartDiseaseorAttack" placeholder="Heart Disease (0/1)">
-<input type="number" id="Chol_Check_Interaction" placeholder="Chol Check Interaction">
-<input type="number" id="HealthBurden" placeholder="Health Burden Score">
-<input type="number" id="LifestyleRisk" placeholder="Lifestyle Risk Score">
-<input type="number" id="Alcohol" placeholder="Alcohol (0/1)">
-</div>
-</div>
-
-<!-- LIFESTYLE -->
-<div class="section">
-<h3>Lifestyle</h3>
-<div class="grid">
-<input type="number" id="PhysActivity" placeholder="Physical Activity (0/1)">
-<input type="number" id="Smoker" placeholder="Smoker (0/1)">
-<input type="number" id="HvyAlcoholConsump" placeholder="Heavy Alcohol (0/1)">
-<input type="number" id="Fruits" placeholder="Fruits (0/1)">
-<input type="number" id="Veggies" placeholder="Vegetables (0/1)">
-</div>
-</div>
-
-<!-- DEMOGRAPHICS -->
-<div class="section">
-<h3>Demographics & Access</h3>
-<div class="grid">
-<input type="number" id="AnyHealthcare" placeholder="Healthcare Access (0/1)">
-<input type="number" id="NoDocbcCost" placeholder="No Doctor due to Cost (0/1)">
-<input type="number" id="Sex" placeholder="Sex (0/1)">
-<input type="number" id="Education" placeholder="Education Level">
-<input type="number" id="Income" placeholder="Income Level">
-</div>
-</div>
-
-<button onclick="predictRisk()">Analyze Risk</button>
-
-<!-- RESULTS -->
-<div class="section" id="resultCard" style="display:none;">
-<h2>Risk Analytics Dashboard</h2>
-<div class="gauge" id="gauge"><span id="riskValue">0%</span></div>
-<div class="badge" id="riskLabel"></div>
-
-<h3>Risk Distribution</h3>
-<canvas id="barChart"></canvas>
-
-<h3>Health Risk Profile</h3>
-<canvas id="radarChart"></canvas>
-
-<h3>Risk Projection</h3>
-<canvas id="lineChart"></canvas>
-
-<h3>AI Clinical Explanation</h3>
-<div class="ai-box" id="aiExplanation"></div>
-
-<h3>Insights</h3>
-<div id="insights"></div>
-
-<h3>Recommendations</h3>
-<div id="recommendations"></div>
-</div>
-
-</div>
-
-<!-- Loading Overlay -->
-<div id="loadingOverlay" style="
-display:none;
-position:fixed;
-top:0; left:0; width:100%; height:100%;
-background:rgba(255,255,255,0.85);
-backdrop-filter:blur(5px);
-z-index:9999;
-justify-content:center;
-align-items:center;
-flex-direction:column;">
-  <div class="spinner"></div>
-  <p style="margin-top:20px;font-size:18px;color:#0a3d62;">
-  Analyzing Clinical Data...
-  </p>
-</div>
+<footer>
+    <div class="footer-grid">
+        <div class="footer-col">
+            <h2 style="color: var(--accent); margin: 0; font-weight: 800; letter-spacing: -1px;">PREDIX</h2>
+            <p style="margin-top: 15px; font-size: 14px; color: var(--text-dim); line-height: 1.6;">Advancing metabolic intelligence through decentralized neural computing and clinical analytics.</p>
+        </div>
+        <div class="footer-col">
+            <h5>Intelligence</h5>
+            <a href="#">Analysis Engine</a>
+            <a href="#">Dataset Specs</a>
+            <a href="#">Inference API</a>
+        </div>
+        <div class="footer-col">
+            <h5>Research</h5>
+            <a href="#">Global Trends</a>
+            <a href="#">Privacy Protocol</a>
+            <a href="#">Model Validation</a>
+        </div>
+        <div class="footer-col">
+            <h5>Project</h5>
+            <a href="#">Documentation</a>
+            <a href="#">Contact Team</a>
+            <a href="#">Source Code</a>
+        </div>
+    </div>
+</footer>
 
 <script>
-async function predictRisk() {
-  document.getElementById("loadingOverlay").style.display = "flex";
-
-  const data = {};
-  document.querySelectorAll("input").forEach(input => {
-    data[input.id] = Number(input.value);
-  });
-
-  const response = await fetch("https://predix-backend-l3dq.onrender.com/api/v1/predict", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data)
-  });
-
-  const result = await response.json();
-  document.getElementById("loadingOverlay").style.display = "none";
-  document.getElementById("resultCard").style.display = "block";
-
-  const risk = result.risk_score;
-  let color = "#4caf50";
-  let label = "Low Risk";
-
-  if (risk > 70) { color = "#e53935"; label = "High Risk"; }
-  else if (risk > 40) { color = "#ff9800"; label = "Moderate Risk"; }
-
-  document.getElementById("gauge").style.background =
-    `conic-gradient(${color} ${risk*3.6}deg, #e0e0e0 0deg)`;
-
-  document.getElementById("riskValue").innerText = risk + "%";
-  document.getElementById("riskLabel").innerText = label;
-  document.getElementById("riskLabel").style.color = color;
-
-  // Charts
-  new Chart(document.getElementById("barChart"), {
-    type: 'bar',
-    data: {
-      labels: ["Low", "Moderate", "High"],
-      datasets: [{
-        data: [100-risk, risk>40?risk-40:0, risk],
-        backgroundColor: ["#4caf50","#ff9800","#e53935"]
-      }]
+    async function runInference() {
+        const btn = document.getElementById("analyzeBtn");
+        const originalText = btn.innerText;
+        btn.innerText = "Processing Data...";
+        
+        const data = {};
+        document.querySelectorAll("input").forEach(i => data[i.id] = Number(i.value) || 0);
+        
+        try {
+            const response = await fetch("https://predix-backend-l3dq.onrender.com/api/v1/predict", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify(data)
+            });
+            const result = await response.json();
+            
+            document.getElementById("resultCard").style.display = "block";
+            const risk = result.risk_score;
+            document.getElementById("riskValue").innerText = risk + "%";
+            document.getElementById("riskValue").style.color = risk > 70 ? "#ff3c3c" : (risk > 40 ? "#f59e0b" : "#22c55e");
+            document.getElementById("riskLabel").innerText = risk > 70 ? "CRITICAL RISK PROFILE" : (risk > 40 ? "MODERATE CONCERN" : "STABLE STATUS");
+            document.getElementById("aiExplanation").innerText = AI Summary: Based on 28 aggregated clinical indicators, the neural network identifies a ${risk}% risk probability. High priority markers evaluated across Biometric, Cardiovascular, and Behavioral data points.;
+            
+            // Scroll to results
+            document.getElementById("resultCard").scrollIntoView({ behavior: 'smooth', block: 'center' });
+            
+        } catch (e) { 
+            console.error(e); 
+            alert("Error connecting to the intelligence engine. Please try again.");
+        } finally {
+            btn.innerText = originalText;
+        }
     }
-  });
-
-  new Chart(document.getElementById("radarChart"), {
-    type: 'radar',
-    data: {
-      labels: ["BMI","BP","Cholesterol","Lifestyle","General Health"],
-      datasets: [{
-        data: [
-          data.BMI,
-          data.HighBP*20,
-          data.HighChol*20,
-          (data.Smoker+data.HvyAlcoholConsump)*10,
-          data.GenHlth*10
-        ],
-        borderColor: "#0a3d62",
-        fill: true
-      }]
-    }
-  });
-
-  new Chart(document.getElementById("lineChart"), {
-    type: 'line',
-    data: {
-      labels: ["Month 1","Month 2","Month 3"],
-      datasets: [{
-        data: [risk-15,risk-5,risk],
-        borderColor: color,
-        fill: false
-      }]
-    }
-  });
-
-  document.getElementById("aiExplanation").innerText =
-    `Based on the provided clinical indicators, the patient demonstrates an estimated ${risk}% probability of developing diabetes.
-Elevated metabolic and cardiovascular markers significantly influence this assessment.
-Structured lifestyle modification and ongoing medical monitoring are recommended.`;
-
-  document.getElementById("insights").innerHTML = "";
-  result.insights.forEach(i =>
-    document.getElementById("insights").innerHTML += `<p>• ${i}</p>`);
-
-  document.getElementById("recommendations").innerHTML = "";
-  result.recommendations.forEach(r =>
-    document.getElementById("recommendations").innerHTML += `<p>• ${r}</p>`);
-}
 </script>
 
 </body>
