@@ -344,7 +344,7 @@ oninput="genValue.innerText=this.value">
                 <div class="field"><label>Phys. Health Days</label><input id="PhysHlth" type="number"></div>
                 <div>
 <label>Difficulty Walking</label>
-<input type="range" min="0" max="1" step="1" value="0" id="HighChol"
+<input type="range" min="0" max="1" step="1" value="0" id="DiffWalk"
 oninput="cholVal.innerText=this.value==1?'YES':'NO'">
 <div class="slider-value" id="cholVal">NO</div>
 </div>
@@ -456,14 +456,14 @@ oninput="vegVal.innerText=this.value==1?'YES':'NO'">
        <div>
 <label>Healthcare Access</label>
 <input type="range" min="0" max="1" step="1" value="1" id="AnyHealthcare">
-oninput="vegVal.innerText=this.value==1?'YES':'NO'">
+
 <div class="slider-value" id="vegVal">YES</div>
 </div>     
            
           <div>
 <label>No Doc</label>
 <input type="range" min="0" max="1" step="1" value="1" id="NoDocbcCost">
-oninput="vegVal.innerText=this.value==1?'YES':'NO'">
+
 <div class="slider-value" id="vegVal">YES</div>
 </div>    
 
@@ -595,6 +595,7 @@ oninput="vegVal.innerText=this.value==1?'YES':'NO'">
                 body: JSON.stringify(data)
             });
             const result = await response.json();
+            console.log(result)
             
             document.getElementById("resultCard").style.display = "block";
             const risk = result.risk_score;
@@ -717,3 +718,4 @@ document.getElementById("insightText").innerHTML=
 
 </body>
 </html>
+
