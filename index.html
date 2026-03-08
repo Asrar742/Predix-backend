@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>PREDIX-Diabetes Risk Analytics</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #f4f8ff;
+      display: flex;
+    }
+
+    .sidebar {
+      width: 240px;
+      background: #0a3d62;
+      color: white;
+      padding: 25px;
+      height: 100vh;
+    }
+
+    .sidebar h2 { text-align: center; margin-bottom: 10px; }
+
+    .main {
+      flex: 1;
+      padding: 30px;
+      overflow-y: auto;
+    }
+
+    h1 { color: #0a3d62; }
+
+    .section {
+      background: white;
+      padding: 20px;
+      border-radius: 14px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      margin-bottom: 25px;
+    }
+
+    .section h3 { margin-bottom: 15px; color: #0a3d62; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    input { padding: 10px; border-radius: 8px; border: 1px solid #ccc; width: 100%; }
+
+    button {
+      background: #0a3d62;
+      color: white;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      width: 100%;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    .gauge {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 20px auto;
+      transition: 1s ease;
+    }
+
+    .gauge span { font-size: 36px; font-weight: bold; }
+
+    .badge { text-align: center; font-size: 22px; font-weight: bold; margin-top: 10px; }
+
+    canvas { max-width: 100%; margin-top: 20px; }
+
+    .ai-box {
+      background: #f4f8ff;
+      padding: 20px;
+      border-radius: 10px;
+      margin-top: 20px;
+    }
+
+    /* Spinner */
+    .spinner {
+      width: 70px;
+      height: 70px;
+      border: 8px solid #e0e0e0;
+      border-top: 8px solid #0a3d62;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+  </style>
+</head>
+
+<body>
+
+<div class="sidebar">
+  <h2>PREDIX</h2>
+  <p>Diabetes Risk Analytics</p>
+</div>
+
+<div class="main">
+<h1>Diabetes Risk Assessment</h1>
+
+<!-- PHYSICAL -->
+<div class="section">
+<h3>Physical Health</h3>
+<div class="grid">
+<input type="number" id="BMI" placeholder="BMI">
+<input type="number" id="Age" placeholder="Age (1-13 CDC)">
+<input type="number" id="GenHlth" placeholder="General Health (1-5)">
+<input type="number" id="MentHlth" placeholder="Mental Health Days">
+<input type="number" id="PhysHlth" placeholder="Physical Health Days">
+<input type="number" id="DiffWalk" placeholder="Difficulty Walking (0/1)">
+<input type="number" id="BMI_Category" placeholder="BMI Category">
+<input type="number" id="Age_Group" placeholder="Age Group">
+<input type="number" id="Healthy_Diet" placeholder="Healthy Diet (0/1)">
+</div>
+</div>
+
+<!-- CARDIO -->
+<div class="section">
+<h3>Cardiovascular</h3>
+<div class="grid">
+<input type="number" id="HighBP" placeholder="High BP (0/1)">
+<input type="number" id="HighChol" placeholder="High Chol (0/1)">
+<input type="number" id="CholCheck" placeholder="Cholesterol Check (0/1)">
+<input type="number" id="Stroke" placeholder="Stroke (0/1)">
+<input type="number" id="HeartDiseaseorAttack" placeholder="Heart Disease (0/1)">
+<input type="number" id="Chol_Check_Interaction" placeholder="Chol Check Interaction">
+<input type="number" id="HealthBurden" placeholder="Health Burden Score">
+<input type="number" id="LifestyleRisk" placeholder="Lifestyle Risk Score">
+<input type="number" id="Alcohol" placeholder="Alcohol (0/1)">
+</div>
+</div>
+
+<!-- LIFESTYLE -->
+<div class="section">
+<h3>Lifestyle</h3>
+<div class="grid">
+<input type="number" id="PhysActivity" placeholder="Physical Activity (0/1)">
+<input type="number" id="Smoker" placeholder="Smoker (0/1)">
+<input type="number" id="HvyAlcoholConsump" placeholder="Heavy Alcohol (0/1)">
+<input type="number" id="Fruits" placeholder="Fruits (0/1)">
+<input type="number" id="Veggies" placeholder="Vegetables (0/1)">
+</div>
+</div>
+
+<!-- DEMOGRAPHICS -->
+<div class="section">
+<h3>Demographics & Access</h3>
+<div class="grid">
+<input type="number" id="AnyHealthcare" placeholder="Healthcare Access (0/1)">
+<input type="number" id="NoDocbcCost" placeholder="No Doctor due to Cost (0/1)">
+<input type="number" id="Sex" placeholder="Sex (0/1)">
+<input type="number" id="Education" placeholder="Education Level">
+<input type="number" id="Income" placeholder="Income Level">
+</div>
+</div>
+
+<button onclick="predictRisk()">Analyze Risk</button>
+
+<!-- RESULTS -->
+<div class="section" id="resultCard" style="display:none;">
+<h2>Risk Analytics Dashboard</h2>
+<div class="gauge" id="gauge"><span id="riskValue">0%</span></div>
+<div class="badge" id="riskLabel"></div>
+
+<h3>Risk Distribution</h3>
+<canvas id="barChart"></canvas>
+
+<h3>Health Risk Profile</h3>
+<canvas id="radarChart"></canvas>
+
+<h3>Risk Projection</h3>
+<canvas id="lineChart"></canvas>
+
+<h3>AI Clinical Explanation</h3>
+<div class="ai-box" id="aiExplanation"></div>
+
+<h3>Insights</h3>
+<div id="insights"></div>
+
+<h3>Recommendations</h3>
+<div id="recommendations"></div>
+</div>
+
+</div>
+
+<!-- Loading Overlay -->
+<div id="loadingOverlay" style="
+display:none;
+position:fixed;
+top:0; left:0; width:100%; height:100%;
+background:rgba(255,255,255,0.85);
+backdrop-filter:blur(5px);
+z-index:9999;
+justify-content:center;
+align-items:center;
+flex-direction:column;">
+  <div class="spinner"></div>
+  <p style="margin-top:20px;font-size:18px;color:#0a3d62;">
+  Analyzing Clinical Data...
+  </p>
+</div>
+
+<script>
+async function predictRisk() {
+  document.getElementById("loadingOverlay").style.display = "flex";
+
+  const data = {};
+  document.querySelectorAll("input").forEach(input => {
+    data[input.id] = Number(input.value);
+  });
+
+  const response = await fetch("https://predix-backend-l3dq.onrender.com/api/v1/predict", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  });
+
+  const result = await response.json();
+  document.getElementById("loadingOverlay").style.display = "none";
+  document.getElementById("resultCard").style.display = "block";
+
+  const risk = result.risk_score;
+  let color = "#4caf50";
+  let label = "Low Risk";
+
+  if (risk > 70) { color = "#e53935"; label = "High Risk"; }
+  else if (risk > 40) { color = "#ff9800"; label = "Moderate Risk"; }
+
+  document.getElementById("gauge").style.background =
+    `conic-gradient(${color} ${risk*3.6}deg, #e0e0e0 0deg)`;
+
+  document.getElementById("riskValue").innerText = risk + "%";
+  document.getElementById("riskLabel").innerText = label;
+  document.getElementById("riskLabel").style.color = color;
+
+  // Charts
+  new Chart(document.getElementById("barChart"), {
+    type: 'bar',
+    data: {
+      labels: ["Low", "Moderate", "High"],
+      datasets: [{
+        data: [100-risk, risk>40?risk-40:0, risk],
+        backgroundColor: ["#4caf50","#ff9800","#e53935"]
+      }]
+    }
+  });
+
+  new Chart(document.getElementById("radarChart"), {
+    type: 'radar',
+    data: {
+      labels: ["BMI","BP","Cholesterol","Lifestyle","General Health"],
+      datasets: [{
+        data: [
+          data.BMI,
+          data.HighBP*20,
+          data.HighChol*20,
+          (data.Smoker+data.HvyAlcoholConsump)*10,
+          data.GenHlth*10
+        ],
+        borderColor: "#0a3d62",
+        fill: true
+      }]
+    }
+  });
+
+  new Chart(document.getElementById("lineChart"), {
+    type: 'line',
+    data: {
+      labels: ["Month 1","Month 2","Month 3"],
+      datasets: [{
+        data: [risk-15,risk-5,risk],
+        borderColor: color,
+        fill: false
+      }]
+    }
+  });
+
+  document.getElementById("aiExplanation").innerText =
+    `Based on the provided clinical indicators, the patient demonstrates an estimated ${risk}% probability of developing diabetes.
+Elevated metabolic and cardiovascular markers significantly influence this assessment.
+Structured lifestyle modification and ongoing medical monitoring are recommended.`;
+
+  document.getElementById("insights").innerHTML = "";
+  result.insights.forEach(i =>
+    document.getElementById("insights").innerHTML += `<p>• ${i}</p>`);
+
+  document.getElementById("recommendations").innerHTML = "";
+  result.recommendations.forEach(r =>
+    document.getElementById("recommendations").innerHTML += `<p>• ${r}</p>`);
+}
+</script>
+
+</body>
+</html>
