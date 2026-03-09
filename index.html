@@ -595,7 +595,14 @@ data.LifestyleRisk = data.Smoker + data.HvyAlcoholConsump;
 data.Alcohol = data.HvyAlcoholConsump;
         
         try {
-            const response = await fetch("https://predix-backend-l3dq.onrender.com/api/v1/predict", {
+            // Use local backend when running locally; fallback to hosted backend.
+            const API_BASE =
+                (window.PREDIX_API_BASE && String(window.PREDIX_API_BASE)) ||
+                (location.hostname === "localhost" || location.hostname === "127.0.0.1"
+                    ? "http://127.0.0.1:8000"
+                    : "https://predix-backend-l3dq.onrender.com");
+
+            const response = await fetch(`${API_BASE}/api/v1/predict`, {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
                 body: JSON.stringify(data)
@@ -724,4 +731,3 @@ document.getElementById("insightText").innerHTML=
 
 </body>
 </html>
-
