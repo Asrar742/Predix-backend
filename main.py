@@ -2,8 +2,9 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 import pandas as pd
+import joblib
 import os
-from diabetes_risk_model import predict_with_scores
+from diabetes_risk_model import final_predict
 # --------------------------------------------------
 # App Configuration
 # --------------------------------------------------
@@ -20,6 +21,19 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# --------------------------------------------------
+# Load Models
+# --------------------------------------------------
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+stageA_model = joblib.load(os.path.join(BASE_DIR, "stageA_model.pkl"))
+stageB_model = joblib.load(os.path.join(BASE_DIR, "stageB_model.pkl"))
+FEATURES = joblib.load(os.path.join(BASE_DIR, "feature_list.pkl"))
+
+THRESHOLD_A = 0.22
+THRESHOLD_B = 0.50
 
 # --------------------------------------------------
 # Request Model
@@ -74,20 +88,19 @@ def health():
 def predict(patient: PatientData):
 
     try:
-        input_df = pd.DataFrame([patient.model_dump()])
-        scored = predict_with_scores(input_df)
-        result = int(scored["class_id"])
+        input_df = pd.DataFrame([patient.dict()])
+        result = final_predict(input_df)
 
         # Map prediction
         if result == 0:
             prediction = "Normal"
-            risk_score = round(float(scored["risk_prob"]) * 100)
+            risk_score = 20
         elif result == 1:
             prediction = "Prediabetes"
-            risk_score = round(float(scored["risk_prob"]) * 100)
+            risk_score = 55
         else:
             prediction = "Diabetes"
-            risk_score = round(float(scored["risk_prob"]) * 100)
+            risk_score = 85
 
         insights = []
 
@@ -113,8 +126,6 @@ def predict(patient: PatientData):
         return {
             "prediction": prediction,
             "risk_score": risk_score,
-            "stageA_prob": scored["stageA_prob"],
-            "stageB_prob": scored["stageB_prob"],
             "insights": insights,
             "recommendations": recommendations
         }
